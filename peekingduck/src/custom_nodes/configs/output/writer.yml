@@ -1,0 +1,3 @@
+# Mandatory configs
+input: ["names"]             # replace values
+output: ["none"]  # replace values

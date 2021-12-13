@@ -1,0 +1,3 @@
+# Mandatory configs
+input: ["img", "bboxes"]             # replace values
+output: ["names"]  # replace values
