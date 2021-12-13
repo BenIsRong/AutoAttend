@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/editstudent.css') }}">
+</head>
+<body>
+    <form action="" method="post">
+        <h1>Edit Student Info</h1>
+        <div id="form_container">
+            {% for key, val in student_info.items() %}
+            {% if key == '_id' or key == 'personId' %}
+            <input type="hidden" name="{{ key }}" value="{{ val }}">
+            {% else %}
+            <br>
+            <div class="inputs">
+                <label for="{{ key }}">{{ key }}</label>
+                <input type="text" name="{{ key }}" value="{{ val }}">    
+            </div>
+            {% endif %}
+            {% endfor %}
+            <br>
+            <input type="submit" value="edit student info">
+        </div>
+    </form>
+</body>
+</html>

@@ -29,6 +29,6 @@ class Node(AbstractNode):
             outputs (dict): Empty dictionary.
         """
         with open(path.join(path.realpath(__file__), "..", "..", "..", "..", "temp", "result", f"result.json"), "w") as write_records:
-            json.dump({"names": inputs["names"]}, write_records)
+            json.dump({"regs": inputs["names"]}, write_records)
     
         return {}

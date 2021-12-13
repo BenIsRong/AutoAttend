@@ -14,12 +14,10 @@ from azure.cognitiveservices.vision.face import FaceClient
 from msrest.authentication import CognitiveServicesCredentials
 
 
-
 def get_faces(bbox: List[float], image: npt.NDArray[np.float64], image_size: Tuple[int, int]) -> List[str]:
     faces = []
     for index, box in enumerate(bbox):
         img_path = path.join(path.realpath(__file__), "..", "..", "..", "..", "temp", "images", f"face_{index}.jpg")
-        print(f"img_path: {img_path}")
         x1, y1, x2, y2 = box
         x1 *= image_size[0]
         x2 *= image_size[0]

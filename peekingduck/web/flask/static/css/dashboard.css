@@ -1,0 +1,101 @@
+table, th, td{
+    border: 2px solid white;
+    border-radius: 2px;
+}
+
+td{
+    padding: 7px 10px;
+    text-align: center;
+}
+
+th{
+    background-color: white;
+    padding: 7px 24px;
+}
+
+#grid{
+    display: grid;
+    grid-template-columns: 0.5fr 2fr 0.5fr 2fr 0.5fr; 
+    grid-template-rows: 2.5fr 0.5fr 2fr 0.5fr; 
+    gap: 0px 0px; 
+    grid-template-areas: 
+    ". upload upload upload ."
+    ". . . . ."
+    ". student . records ."
+    ". . . . ."; 
+}
+
+#upload_wrapper{
+    grid-area: upload;
+}
+
+#upload_container{
+    height: 100%;
+    position: relative;
+    background-color: rgb(255, 119, 119);
+}
+
+#upload_wrapper form{
+    position: absolute;
+    top: 50%;
+    left:50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+}
+
+#upload_wrapper form #inputs{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+#attendance_image{
+    width: 550px;
+    height: 350px;
+    object-fit: cover;
+}
+
+#inputs input[type=submit]{
+    padding: 5px 8px;
+    background-color: white;
+    border-radius: 4px;
+    color: rgb(17, 109, 109);
+    font-weight: 400;
+}
+
+#students_wrapper{
+    grid-area: student;
+}
+
+#students_container{
+    padding: 15px 15px 0px 15px;
+    position: relative;
+    background-color: aqua;
+    overflow-y: auto;
+    height: 300px;
+}
+
+td a{
+    text-decoration: none;
+    color: rgb(207, 104, 104);
+    transition-duration: 0.25s;
+}
+
+td a:hover{
+    color: rgb(211, 0, 0);
+    transition-duration: 0.25s;
+}
+
+#records_wrapper{
+    grid-area: records;
+}
+
+#records_container{
+    padding: 15px 15px 0px 15px;
+    position: relative;
+    background-color: rgb(121, 252, 186);
+    overflow-y: auto;
+    height: 300px;
+}

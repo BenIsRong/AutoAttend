@@ -1,6 +1,6 @@
 nodes:
 - input.recorded:
-    input_dir: D:/LESSONS/EXTERN/TRAINING/dataset/new/testing/all.jpg
+    input_dir: C:/Users/benis/Documents/GitHub/AutoAttend/peekingduck/temp/images/attendance.jpg
 - model.mtcnn
 - custom_nodes.model.face_recognition
 - custom_nodes.output.writer
