@@ -141,8 +141,11 @@ def records():
             res_records = []
 
             for rec in recs:
-                rec["name"] = student.find_one({"reg": int(rec["reg"])})["name"]
-                res_records.append(rec)
+                try:
+                    rec["name"] = student.find_one({"reg": int(rec["reg"])})["name"]
+                    res_records.append(rec)
+                except:
+                    continue
 
             return json.dumps({"records": res_records})
         else:
