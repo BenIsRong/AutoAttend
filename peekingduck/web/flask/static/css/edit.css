@@ -11,6 +11,7 @@ form{
 #form_container{
     position: relative;
 }
+
 input[type="submit"]{
     position: absolute;
     right:0;
