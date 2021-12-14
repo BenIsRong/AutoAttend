@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/addStudent.css') }}">
+    <title>Add Student</title>
+</head>
+<body>
+    <form action="" method="post" enctype="multipart/form-data">
+        <h1>Add Student</h1>
+        <div id="form_container">
+            <div id="inputs">
+                <label for="training_data">Images of student (min. 50 images)</label>
+                <input type="file" name="training_data" id="training_data" multiple required>
+            </div>
+            <div id="inputs">
+                <label for="name">Name</label>
+                <input type="text" name="name" id="name" required>
+            </div>
+            <div id="inputs">
+                <label for="class">Class</label>
+                <input type="text" name="class" id="class" required>
+            </div>
+            <input type="submit" value="Add Student">
+        </div>
+    </form>
+</body>
+</html>

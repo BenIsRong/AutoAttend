@@ -11,6 +11,7 @@
 <body>
     <header>
         <h1>AutoAttend</h1>
+        <h3 onclick="location.href='/logout'">logout</h3>
     </header>
     <div id="grid">
         <div id="upload_wrapper">
@@ -20,7 +21,7 @@
                     <img src="#" alt=" " id="attendance_image">
                     <br>
                     <div id="inputs">
-                        <input type="file" name="attendance" id="attendance" onchange="show_image(this);">
+                        <input type="file" name="attendance" id="attendance" onchange="show_image(this);" required>
                         <input type="submit" value="Send Attendance">
                     </div>
                 </form>    
@@ -40,6 +41,7 @@
                     </tr>
                 </table>
             </div>
+            <button onclick="location.href='/addStudent'" id="add_student">Add Student</button>
         </div>
 
         <div id="records_wrapper">
@@ -57,7 +59,6 @@
                 </table>
             </div>
         </div>
-        
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>

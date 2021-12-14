@@ -10,6 +10,9 @@ import subprocess
 
 from datetime import datetime
 from bson.objectid import ObjectId
+from azure.cognitiveservices.vision.face import FaceClient
+from msrest.authentication import CognitiveServicesCredentials
+from azure.cognitiveservices.vision.face.models import TrainingStatusType, Person
 
 app = flask.Flask(__name__)
 app.secret_key = "secret_key"
@@ -47,8 +50,8 @@ def students():
             return json.dumps({"students": sorted([{"id": str(std["_id"]), "reg": std["reg"], "name": std["name"], "class": std["class"], "personId": std["personId"]} for std in student.find({}, {"_id": 1, "reg": 1, "name": 1, "class": 1, "personId": 1})], key=lambda x:x["reg"])})
         else:
             args = [args.split("=")[-1] for args in flask.request.get_data().decode().split("&")]
-            # student.find_one_and_delete({"_id": ObjectId(args[0])})
-            # response = requests.delete(f"{endpoint}face/v1.0/persongroups/{person_group_id}/persons/{args[1]}", headers={"Ocp-Apim-Subscription-Key": key})
+            student.find_one_and_delete({"_id": ObjectId(args[0])})
+            response = requests.delete(f"{endpoint}face/v1.0/persongroups/{person_group_id}/persons/{args[1]}", headers={"Ocp-Apim-Subscription-Key": key})
             return json.dumps({"students": []})
 
 @app.route('/api/v1/records', methods=["GET", "DELETE"])
@@ -81,12 +84,12 @@ def mark():
     if not "adminNum" in flask.session:
         return flask.redirect(flask.url_for("home"))
     else:
+        now = datetime.now()
+        date = now.strftime("%d/%m/%y")
+        time = now.strftime("%H:%M")
+        res_path = os.path.join("\\".join(os.path.realpath(__file__).split('\\')[:-3]), "temp", "result")
+        images_path = os.path.join("\\".join(os.path.realpath(__file__).split('\\')[:-3]), "temp", "images")
         try:
-            now = datetime.now()
-            date = now.strftime("%d/%m/%y")
-            time = now.strftime("%H:%M")
-            res_path = os.path.join("\\".join(os.path.realpath(__file__).split('\\')[:-3]), "temp", "result")
-            images_path = os.path.join("\\".join(os.path.realpath(__file__).split('\\')[:-3]), "temp", "images")
             flask.request.files["attendance"].save(images_path + "\\attendance.jpg")
             subprocess.run(["peekingduck", "run"])
             result = json.load(open(res_path + "\\result.json"))
@@ -103,6 +106,11 @@ def mark():
             return flask.redirect(flask.url_for("dashboard"))
 
         except Exception:
+            for file in glob.glob(f"{res_path}\\*"):
+                os.remove(file)
+
+            for file in glob.glob(f"{images_path}\\*"):
+                os.remove(file)
             return flask.redirect(flask.url_for("dashboard"))
 
 @app.route('/editStudent', methods=['GET', 'POST'])
@@ -115,7 +123,7 @@ def edit_student():
             return flask.render_template('editStudent.html', student_info = student_info)
         else:
             print(flask.request.form)
-            student.find_one_and_update({"_id": ObjectId(flask.request.args["id"])}, {"$set": {"reg": int(flask.request.form["reg"]), "name": flask.request.form["name"], "class": flask.request.form["class"]}})
+            student.find_one_and_update({"_id": ObjectId(flask.request.form["_id"])}, {"$set": {"name": flask.request.form["name"], "class": flask.request.form["class"]}})
     return flask.redirect(flask.url_for("dashboard"))
 
 @app.route('/editAttendance', methods=['GET', 'POST'])
@@ -132,5 +140,49 @@ def edit_attendance():
             record.find_one_and_update({"_id": ObjectId(flask.request.form["_id"])}, {"$set": {"time": flask.request.form["time"], "date": flask.request.form["date"]}})
     return flask.redirect(flask.url_for("dashboard"))
 
+@app.route('/addStudent', methods=['GET', 'POST'])
+def add_student():
+    if not "adminNum" in flask.session:
+        return flask.redirect(flask.url_for("home"))
+    else:
+        if flask.request.method ==  "GET":
+            return flask.render_template("addStudent.html")
+        else:
+            face_client = FaceClient(endpoint, CognitiveServicesCredentials(key))
+            images_path = os.path.join("\\".join(os.path.realpath(__file__).split('\\')[:-3]), "temp", "images")
+            for index, file in enumerate(flask.request.files.getlist("training_data")):
+                file.save(images_path + f"\\{index}.jpg")
+            
+            id = sorted([{"id": str(std["_id"]), "reg": std["reg"], "name": std["name"], "class": std["class"], "personId": std["personId"]} for std in student.find({}, {"_id": 1, "reg": 1, "name": 1, "class": 1, "personId": 1})], key=lambda x:x["reg"])[-1]["reg"] + 1
+            person_group_person = face_client.person_group_person.create(person_group_id, name=f"{id}")
+            student.insert_one({"reg": id, "name": f"Person {id}", "class":"First", "personId": person_group_person.person_id})
+            
+            person_faces = glob.glob(f"{images_path}\\*.jpg")
+            for face in person_faces:
+                try:
+                    face_client.person_group_person.add_face_from_stream(person_group_id, person_group_person.person_id, open(face, "r+b"))
+                except:
+                    continue
+
+            # face_client.person_group.train(person_group_id)
+                        
+            # while True:
+            #     training_status = face_client.person_group.get_training_status(person_group_id)
+            #     if (training_status.status is TrainingStatusType.succeeded):
+            #         break
+            #     elif (training_status.status is TrainingStatusType.failed):
+            face_client.person_group_person.delete(person_group_id, person_group_person.person_id)
+            #         student.find_one_and_delete({"reg": id})
+            
+            for file in glob.glob(f"{images_path}\\*"):
+                os.remove(file)
+
+            return flask.redirect(flask.url_for("dashboard"))
+
+@app.route('/logout', methods=["GET"])
+def logout():
+    if "adminNum" in flask.session:
+        flask.session.pop("adminNum", None)
+    return flask.redirect(flask.url_for("dashboard"))
 
 app.run()
