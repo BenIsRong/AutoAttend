@@ -65,6 +65,9 @@ def records():
                 res_records.append(rec)
 
             return json.dumps({"records": res_records})
+        else:
+            record.find_one_and_delete({"_id": ObjectId(flask.request.get_data().decode().split('=')[-1])})
+            return json.dumps({"students": []})
 
 @app.route('/dashboard', methods=["GET"])
 def dashboard():
@@ -115,6 +118,19 @@ def edit_student():
             student.find_one_and_update({"_id": ObjectId(flask.request.args["id"])}, {"$set": {"reg": int(flask.request.form["reg"]), "name": flask.request.form["name"], "class": flask.request.form["class"]}})
     return flask.redirect(flask.url_for("dashboard"))
 
+@app.route('/editAttendance', methods=['GET', 'POST'])
+def edit_attendance():
+    if not "adminNum" in flask.session:
+        return flask.redirect(flask.url_for("home"))
+    else:
+        if flask.request.method == "GET":
+            record_info = record.find_one({"_id": ObjectId(flask.request.args["id"])})
+            record_info["name"] = student.find_one({"reg": int(record_info["reg"])})["name"]
+            return flask.render_template('editAttendance.html', record_info = {"name": record_info["name"], "reg": record_info["reg"], "_id": record_info["_id"], "time": record_info["time"], "date": record_info["date"]})
+        else:
+            print(flask.request.form)
+            record.find_one_and_update({"_id": ObjectId(flask.request.form["_id"])}, {"$set": {"time": flask.request.form["time"], "date": flask.request.form["date"]}})
+    return flask.redirect(flask.url_for("dashboard"))
 
 
 app.run()

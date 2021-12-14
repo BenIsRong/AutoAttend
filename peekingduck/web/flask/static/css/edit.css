@@ -42,3 +42,7 @@ form .inputs{
     flex-direction: row;
     justify-content: space-between;
 }
+
+.disabled{
+    color: black;
+}

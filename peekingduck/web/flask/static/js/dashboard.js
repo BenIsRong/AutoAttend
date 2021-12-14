@@ -40,6 +40,8 @@ $(function(){
                         <td>${record.name}</td>
                         <td>${record.date}</td>
                         <td>${record.time}</td>
+                        <td><a onclick="confirm_delete_attendance('${record.id}', '${record.name}')" href="">remove attendance</a></td>
+                        <td><a href="/editAttendance?id=${record.id}">edit attendance</a></td>
                     </tr>
                 `);
             });
@@ -58,6 +60,28 @@ function confirm_delete_student(id, personId, name){
                 data: {
                     id: id,
                     personId
+                }
+            }
+        ).done(
+            (data)=>{
+                location.reload();
+            }
+        ).fail(
+            (err)=>{
+                console.log(err.responseText);
+            }
+        );
+    }
+}
+
+function confirm_delete_attendance(id, name){
+    if(window.confirm(`are you sure you want to delete ${name}'s attendance?`)){
+        $.ajax(
+            {
+                method: "delete",
+                url: "/api/v1/records",
+                data: {
+                    id: id
                 }
             }
         ).done(

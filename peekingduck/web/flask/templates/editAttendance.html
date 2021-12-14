@@ -10,27 +10,27 @@
 </head>
 <body>
     <form action="" method="post">
-        <h1>Edit Student Info</h1>
+        <h1>Edit Attendance</h1>
         <div id="form_container">
-            {% for key, val in student_info.items() %}
-            {% if key == '_id' or key == 'personId' %}
-            <input type="hidden" name="{{ key }}" value="{{ val }}">
-            {% elif key == 'reg' %}
+            {% for key, val in record_info.items() %}
+            {% if key == '_id' %}
+                <input type="hidden" name="{{ key }}" value="{{ val }}">
+            {% elif key == 'reg' or key == 'name' %}
                 <br>
                 <div class="inputs">
                     <label for="{{ key }}">{{ key }}</label>
                     <input type="text" name="{{ key }}" value="{{ val }}" disabled class="disabled">    
                 </div>
             {% else %}
-            <br>
-            <div class="inputs">
-                <label for="{{ key }}">{{ key }}</label>
-                <input type="text" name="{{ key }}" value="{{ val }}">    
-            </div>
+                <br>
+                <div class="inputs">
+                    <label for="{{ key }}">{{ key }}</label>
+                    <input type="text" name="{{ key }}" value="{{ val }}">    
+                </div>
             {% endif %}
             {% endfor %}
             <br>
-            <input type="submit" value="edit student info">
+            <input type="submit" value="edit attendance">
         </div>
     </form>
 </body>
