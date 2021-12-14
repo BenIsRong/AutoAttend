@@ -97,7 +97,6 @@ function confirm_delete_attendance(id, name){
 }
 
 function show_image(file){
-    console.log(file);
     var file_reader = new FileReader();
     
     file_reader.onload = (event)=>{

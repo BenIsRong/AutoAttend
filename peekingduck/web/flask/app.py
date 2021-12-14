@@ -122,7 +122,6 @@ def edit_student():
             student_info = student.find_one({"_id": ObjectId(flask.request.args["id"])})
             return flask.render_template('editStudent.html', student_info = student_info)
         else:
-            print(flask.request.form)
             student.find_one_and_update({"_id": ObjectId(flask.request.form["_id"])}, {"$set": {"name": flask.request.form["name"], "class": flask.request.form["class"]}})
     return flask.redirect(flask.url_for("dashboard"))
 
@@ -136,7 +135,6 @@ def edit_attendance():
             record_info["name"] = student.find_one({"reg": int(record_info["reg"])})["name"]
             return flask.render_template('editAttendance.html', record_info = {"name": record_info["name"], "reg": record_info["reg"], "_id": record_info["_id"], "time": record_info["time"], "date": record_info["date"]})
         else:
-            print(flask.request.form)
             record.find_one_and_update({"_id": ObjectId(flask.request.form["_id"])}, {"$set": {"time": flask.request.form["time"], "date": flask.request.form["date"]}})
     return flask.redirect(flask.url_for("dashboard"))
 
@@ -164,15 +162,15 @@ def add_student():
                 except:
                     continue
 
-            # face_client.person_group.train(person_group_id)
+            face_client.person_group.train(person_group_id)
                         
-            # while True:
-            #     training_status = face_client.person_group.get_training_status(person_group_id)
-            #     if (training_status.status is TrainingStatusType.succeeded):
-            #         break
-            #     elif (training_status.status is TrainingStatusType.failed):
-            face_client.person_group_person.delete(person_group_id, person_group_person.person_id)
-            #         student.find_one_and_delete({"reg": id})
+            while True:
+                training_status = face_client.person_group.get_training_status(person_group_id)
+                if (training_status.status is TrainingStatusType.succeeded):
+                    break
+                elif (training_status.status is TrainingStatusType.failed):
+                    face_client.person_group_person.delete(person_group_id, person_group_person.person_id)
+                    student.find_one_and_delete({"reg": id})
             
             for file in glob.glob(f"{images_path}\\*"):
                 os.remove(file)
