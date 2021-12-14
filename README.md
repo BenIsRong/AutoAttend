@@ -1,5 +1,5 @@
 # AutoAttend
-AISG Student Hackathon 2021 - AutoAttend Submission
+AISG Student Hackathon 2021 - PeekingDuck AIBrick Submission
 
 
 ## Overview
